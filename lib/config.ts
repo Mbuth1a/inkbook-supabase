@@ -6,8 +6,8 @@ export const studio = {
   tagline: "Custom tattoos across Nairobi, Naivasha and Thika Road, with house calls. Fine line, blackwork and script.",
   area: "Nairobi",
   city: "Nairobi",
-  phoneDisplay: "+254 757 219 316",
-  instagram: "https://instagram.com/yourhandle",
+  phoneDisplay: "+254 757 219 336",
+  instagram: "https://www.instagram.com/rannie_ink_ke/?hl=en",
   // Replace with the real address and coordinates before launch; they feed Google's local business schema.
   address: { street: "Argwings Kodhek Rd", locality: "Nairobi", region: "Nairobi County", country: "KE" },
   geo: { lat: -1.2921, lng: 36.7872 },
