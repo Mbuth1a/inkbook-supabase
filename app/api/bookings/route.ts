@@ -8,6 +8,48 @@ import { bookingInput } from "@/lib/validation";
 
 export const dynamic = "force-dynamic";
 
+type NewBooking = {
+  name: string; phone: string; email?: string; style: string; concept: string;
+  size: string; placement: string; sizeCm?: string; date: string; startMin: number;
+};
+
+// Emails the artist through FormSubmit. Requires ARTIST_EMAIL to be set.
+async function notifyArtist(b: NewBooking, id: string) {
+  const to = process.env.ARTIST_EMAIL;
+  if (!to) return;
+  const hh = String(Math.floor(b.startMin / 60)).padStart(2, "0");
+  const mm = String(b.startMin % 60).padStart(2, "0");
+  const res = await fetch(`https://formsubmit.co/ajax/${encodeURIComponent(to)}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+      Origin: process.env.SITE_URL || "http://localhost:3000",
+      Referer: `${process.env.SITE_URL || "http://localhost:3000"}/`,
+    },
+    body: JSON.stringify({
+      _subject: `New booking request: ${b.name} on ${b.date}`,
+      _template: "table",
+      _captcha: "false",
+      Booking: id,
+      Name: b.name,
+      Phone: b.phone,
+      Email: b.email ?? "",
+      Style: b.style,
+      Concept: b.concept,
+      Size: b.sizeCm ? `${b.size} (${b.sizeCm})` : b.size,
+      Placement: b.placement,
+      Date: b.date,
+      Time: `${hh}:${mm}`,
+      Review: `${process.env.SITE_URL}/admin?view=requests`,
+    }),
+  });
+  const reply = (await res.json().catch(() => null)) as { success?: unknown; message?: string } | null;
+  if (!res.ok || String(reply?.success) !== "true") {
+    throw new Error(`FormSubmit: ${reply?.message ?? res.status}`);
+  }
+}
+
 export async function POST(req: Request) {
   const body = await req.json().catch(() => null);
   const parsed = bookingInput.safeParse(body);
@@ -49,6 +91,11 @@ export async function POST(req: Request) {
     const req = await createRequest(newBooking);
     if (!req.ok) {
       return NextResponse.json({ error: "Sorry, that time was just taken. Please pick another slot.", code: "slot_taken" }, { status: 409 });
+    }
+    try {
+      await notifyArtist(newBooking, req.booking.id);
+    } catch (e) {
+      console.error("[bookings] artist notification failed", e);
     }
     return NextResponse.json({ id: req.booking.id, holdExpiresAt: 0 }, { status: 201 });
   }
