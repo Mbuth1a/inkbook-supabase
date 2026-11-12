@@ -7,7 +7,7 @@ import { booking } from "@/lib/config";
 export const faq = [
   {
     q: "How much does a tattoo cost in Nairobi?",
-    a: "Pricing depends on size, detail and placement. Small pieces start from about KES 5,000, medium pieces from KES 12,000 and large or multi-session work is quoted after a consultation. Replace these figures with your real rates before launch.",
+    a: "Pricing depends on size, detail and placement. Small pieces start from about KES 5,000, medium pieces from KES 12,000 and large or multi-session work is quoted after a consultation.",
   },
   {
     q: "How does the deposit work?",
