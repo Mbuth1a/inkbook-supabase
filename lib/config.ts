@@ -43,7 +43,7 @@ export const styles = [
   "Fine line",
   "Minimalist",
   "Blackwork",
-  "Neo-traditional",
+  "Tribal",
   "Script / lettering",
   "Realism",
   "Cover-up",
